@@ -1,2 +1,3 @@
 # quake_bspinfo
-Extract Quake related information from .bsp files.
+
+> Extract Quake related information from .bsp files

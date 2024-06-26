@@ -1,0 +1,22 @@
+[package]
+name = "quake_bspinfo"
+description = "Extract Quake related information from .bsp files."
+categories = ["parsing"]
+keywords = ["bsp", "parser", "quake", "quakeworld"]
+repository = "https://github.com/vikpe/bspparser"
+authors = ["Viktor Persson"]
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+include = [
+    "/Cargo.toml",
+    "/README.md",
+    "/src/**",
+]
+
+[dependencies]
+anyhow = "1.0.86"
+bspparser = "0.2.0"
+
+[dev-dependencies]
+pretty_assertions = "1.4.0"
