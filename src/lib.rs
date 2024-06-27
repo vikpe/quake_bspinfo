@@ -2,6 +2,12 @@ use std::collections::HashMap;
 
 use anyhow::Result;
 
+use info::{
+    Ammo, Armors, EntityStats, Func, Healthpacks, Info, Keys, Monsters, Powerups, Spawns, Weapons,
+};
+
+pub mod info;
+
 pub fn get_info(data: &[u8]) -> Result<Info> {
     let ents = bspparser::entities_as_hashmaps(data)?;
 
@@ -81,12 +87,6 @@ pub fn get_info(data: &[u8]) -> Result<Info> {
                 quad: _count(&ents, "item_artifact_invulnerability"),
                 ring: _count(&ents, "item_artifact_invisibility"),
             },
-            runes: Runes {
-                haste: 0,
-                regeneration: 0,
-                resistance: 0,
-                strength: 0,
-            },
         },
         race_routes: vec![],
     };
@@ -113,126 +113,6 @@ fn _count_sf(
                 && hmap.get("spawnflags") == spawnflag.as_ref()
         })
         .count() as u32
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Info {
-    message: String,
-    size: u32,
-    entity_stats: EntityStats,
-    race_routes: Vec<RaceRoute>,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct EntityStats {
-    spawns: Spawns,
-    func: Func,
-    monsters: Monsters,
-    armors: Armors,
-    weapons: Weapons,
-    healthpacks: Healthpacks,
-    ammo: Ammo,
-    keys: Keys,
-    powerups: Powerups,
-    runes: Runes,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Ammo {
-    shells_small: u32,
-    shells_large: u32,
-    nails_small: u32,
-    nails_large: u32,
-    rockets_small: u32,
-    rockets_large: u32,
-    cells_small: u32,
-    cells_large: u32,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Armors {
-    green_armor: u32,
-    yellow_armor: u32,
-    red_armor: u32,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Func {
-    changelevel: u32,
-    secret: u32,
-    teleport: u32,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Healthpacks {
-    health_small: u32,
-    health_large: u32,
-    megahealth: u32,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Keys {
-    silver: u32,
-    gold: u32,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Monsters {
-    chton: u32,
-    death_knight: u32,
-    enforcer: u32,
-    fiend: u32,
-    grunt: u32,
-    knight: u32,
-    ogre: u32,
-    rotfish: u32,
-    rottweiler: u32,
-    scrag: u32,
-    shambler: u32,
-    shub_niggurath: u32,
-    spawn: u32,
-    vore: u32,
-    zombie: u32,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Powerups {
-    biosuit: u32,
-    quad: u32,
-    pent: u32,
-    ring: u32,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Runes {
-    haste: u32,
-    regeneration: u32,
-    resistance: u32,
-    strength: u32,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Spawns {
-    coop: u32,
-    deathmatch: u32,
-    start: u32,
-    start2: u32,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Weapons {
-    super_shotgun: u32,
-    nailgun: u32,
-    super_nailgun: u32,
-    grenade_launcher: u32,
-    rocket_launcher: u32,
-    ligthning_gun: u32,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct RaceRoute {
-    name: String,
-    description: String,
 }
 
 #[cfg(test)]
