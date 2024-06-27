@@ -1,13 +1,13 @@
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct BspInfo {
+pub struct Info {
     pub message: String,
     pub size: u32,
-    pub entities: Entities,
+    pub entity_count: EntityCount,
     pub race_routes: Vec<RaceRoute>,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Entities {
+pub struct EntityCount {
     pub ammo: Ammo,
     pub armors: Armors,
     pub healthpacks: Healthpacks,
