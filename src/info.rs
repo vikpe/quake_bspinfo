@@ -1,22 +1,22 @@
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Info {
+pub struct BspInfo {
     pub message: String,
     pub size: u32,
-    pub entity_stats: EntityStats,
+    pub entities: Entities,
     pub race_routes: Vec<RaceRoute>,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct EntityStats {
+pub struct Entities {
+    pub ammo: Ammo,
+    pub armors: Armors,
+    pub healthpacks: Healthpacks,
+    pub items: Items,
+    pub monsters: Monsters,
+    pub powerups: Powerups,
     pub spawns: Spawns,
     pub triggers: Triggers,
-    pub monsters: Monsters,
-    pub armors: Armors,
     pub weapons: Weapons,
-    pub healthpacks: Healthpacks,
-    pub ammo: Ammo,
-    pub keys: Keys,
-    pub powerups: Powerups,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
@@ -39,13 +39,6 @@ pub struct Armors {
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Triggers {
-    pub changelevel: u32,
-    pub secret: u32,
-    pub teleport: u32,
-}
-
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct Healthpacks {
     pub health_small: u32,
     pub health_large: u32,
@@ -53,9 +46,12 @@ pub struct Healthpacks {
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Keys {
-    pub silver: u32,
-    pub gold: u32,
+pub struct Items {
+    pub silver_key: u32,
+    pub gold_key: u32,
+    pub red_flag: u32,
+    pub blue_flag: u32,
+    pub tfgoal: u32,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
@@ -90,6 +86,18 @@ pub struct Spawns {
     pub coop: u32,
     pub deathmatch: u32,
     pub start: u32,
+    pub team1: u32,
+    pub team1_deathmatch: u32,
+    pub team2: u32,
+    pub team2_deathmatch: u32,
+    pub teamspawn: u32,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct Triggers {
+    pub changelevel: u32,
+    pub secret: u32,
+    pub teleport: u32,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
