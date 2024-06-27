@@ -9,7 +9,7 @@ pub struct Info {
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct EntityStats {
     pub spawns: Spawns,
-    pub func: Func,
+    pub triggers: Triggers,
     pub monsters: Monsters,
     pub armors: Armors,
     pub weapons: Weapons,
@@ -39,7 +39,7 @@ pub struct Armors {
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
-pub struct Func {
+pub struct Triggers {
     pub changelevel: u32,
     pub secret: u32,
     pub teleport: u32,
@@ -90,7 +90,6 @@ pub struct Spawns {
     pub coop: u32,
     pub deathmatch: u32,
     pub start: u32,
-    pub start2: u32,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]

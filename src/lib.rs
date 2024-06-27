@@ -1,118 +1,92 @@
-use std::collections::HashMap;
-
 use anyhow::Result;
 
-use info::{
-    Ammo, Armors, EntityStats, Func, Healthpacks, Info, Keys, Monsters, Powerups, Spawns, Weapons,
-};
+use info::{EntityStats, Info};
 
 pub mod info;
 
 pub fn get_info(data: &[u8]) -> Result<Info> {
     let ents = bspparser::entities_as_hashmaps(data)?;
 
-    let message = ents
-        .iter()
-        .find(|hmap| hmap.get("classname").unwrap() == "worldspawn")
-        .map(|hmap| hmap.get("message").unwrap_or(&"".to_string()).to_string())
-        .unwrap_or("".to_string());
-
-    let info = Info {
-        message,
+    let mut info = Info {
         size: data.len() as u32,
-        entity_stats: EntityStats {
-            spawns: Spawns {
-                coop: _count(&ents, "info_player_coop"),
-                deathmatch: _count(&ents, "info_player_deathmatch"),
-                start: _count(&ents, "info_player_start"),
-                start2: _count(&ents, "info_player_start2"),
-            },
-            func: Func {
-                changelevel: _count(&ents, "trigger_changelevel"),
-                secret: _count(&ents, "trigger_secret"),
-                teleport: _count(&ents, "trigger_teleport"),
-            },
-            monsters: Monsters {
-                chton: _count(&ents, "monster_boss"),
-                death_knight: _count(&ents, "monster_hell_knight"),
-                enforcer: _count(&ents, "monster_enforcer"),
-                fiend: _count(&ents, "monster_demon1"),
-                grunt: _count(&ents, "monster_army"),
-                knight: _count(&ents, "monster_demon1"),
-                ogre: _count(&ents, "monster_ogre"),
-                rotfish: _count(&ents, "monster_dog"),
-                rottweiler: _count(&ents, "monster_dog"),
-                scrag: _count(&ents, "monster_wizard"),
-                shambler: _count(&ents, "monster_shambler"),
-                shub_niggurath: _count(&ents, "monster_oldone"),
-                spawn: _count(&ents, "monster_tarbaby"),
-                vore: _count(&ents, "monster_shalrath"),
-                zombie: _count(&ents, "monster_zombie"),
-            },
-            armors: Armors {
-                green_armor: _count(&ents, "item_armor1"),
-                yellow_armor: _count(&ents, "item_armor2"),
-                red_armor: _count(&ents, "item_armorInv"),
-            },
-            weapons: Weapons {
-                super_shotgun: _count(&ents, "weapon_supershotgun"),
-                nailgun: _count(&ents, "weapon_nailgun"),
-                super_nailgun: _count(&ents, "weapon_supernailgun"),
-                grenade_launcher: _count(&ents, "weapon_grenadelauncher"),
-                rocket_launcher: _count(&ents, "weapon_rocketlauncher"),
-                ligthning_gun: _count(&ents, "weapon_lightning"),
-            },
-            healthpacks: Healthpacks {
-                health_small: _count_sf(&ents, "item_health", None),
-                health_large: _count_sf(&ents, "item_health", Some("1".to_string())),
-                megahealth: _count_sf(&ents, "item_health", Some("2".to_string())),
-            },
-            ammo: Ammo {
-                shells_small: _count_sf(&ents, "item_shells", None),
-                shells_large: _count_sf(&ents, "item_shells", Some("1".to_string())),
-                nails_small: _count_sf(&ents, "item_spikes", None),
-                nails_large: _count_sf(&ents, "item_spikes", Some("1".to_string())),
-                rockets_small: _count_sf(&ents, "item_rockets", None),
-                rockets_large: _count_sf(&ents, "item_rockets", Some("1".to_string())),
-                cells_small: _count_sf(&ents, "item_cells", None),
-                cells_large: _count_sf(&ents, "item_cells", Some("1".to_string())),
-            },
-            keys: Keys {
-                silver: _count(&ents, "item_key1"),
-                gold: _count(&ents, "item_key2"),
-            },
-            powerups: Powerups {
-                biosuit: _count(&ents, "item_artifact_envirosuit"),
-                pent: _count(&ents, "item_artifact_super_damage"),
-                quad: _count(&ents, "item_artifact_invulnerability"),
-                ring: _count(&ents, "item_artifact_invisibility"),
-            },
-        },
-        race_routes: vec![],
+        ..Default::default()
     };
 
+    let mut stats: EntityStats = Default::default();
+
+    for ent in ents.iter() {
+        if let Some(classname) = ent.get("classname") {
+            let sf = ent.get("spawnflags");
+
+            match classname.as_str() {
+                "worldspawn" => {
+                    info.message = ent.get("message").unwrap_or(&"".to_string()).to_string()
+                }
+                "info_player_coop" => stats.spawns.coop += 1,
+                "info_player_deathmatch" => stats.spawns.deathmatch += 1,
+                "info_player_start" => stats.spawns.start += 1,
+
+                "monster_army" => stats.monsters.grunt += 1,
+                "monster_boss" => stats.monsters.chton += 1,
+                "monster_demon1" => stats.monsters.fiend += 1,
+                "monster_dog" => stats.monsters.rottweiler += 1,
+                "monster_enforcer" => stats.monsters.enforcer += 1,
+                "monster_fish" => stats.monsters.rotfish += 1,
+                "monster_hell_knight" => stats.monsters.death_knight += 1,
+                "monster_knight" => stats.monsters.knight += 1,
+                "monster_ogre" => stats.monsters.ogre += 1,
+                "monster_oldone" => stats.monsters.shub_niggurath += 1,
+                "monster_shalrath" => stats.monsters.vore += 1,
+                "monster_shambler" => stats.monsters.shambler += 1,
+                "monster_tarbaby" => stats.monsters.spawn += 1,
+                "monster_wizard" => stats.monsters.scrag += 1,
+                "monster_zombie" => stats.monsters.zombie += 1,
+
+                "item_armor1" => stats.armors.green_armor += 1,
+                "item_armor2" => stats.armors.yellow_armor += 1,
+                "item_armorInv" => stats.armors.red_armor += 1,
+
+                "weapon_supershotgun" => stats.weapons.super_shotgun += 1,
+                "weapon_nailgun" => stats.weapons.nailgun += 1,
+                "weapon_supernailgun" => stats.weapons.super_nailgun += 1,
+                "weapon_grenadelauncher" => stats.weapons.grenade_launcher += 1,
+                "weapon_rocketlauncher" => stats.weapons.rocket_launcher += 1,
+                "weapon_lightning" => stats.weapons.ligthning_gun += 1,
+
+                "item_health" if sf.is_none() => stats.healthpacks.health_small += 1,
+                "item_health" if sf.is_some_and(|s| s == "1") => {
+                    stats.healthpacks.health_large += 1
+                }
+                "item_health" if sf.is_some_and(|s| s == "2") => stats.healthpacks.megahealth += 1,
+
+                "item_shells" if sf.is_none() => stats.ammo.shells_small += 1,
+                "item_shells" if sf.is_some() => stats.ammo.shells_large += 1,
+                "item_spikes" if sf.is_none() => stats.ammo.nails_small += 1,
+                "item_spikes" if sf.is_some() => stats.ammo.nails_large += 1,
+                "item_rockets" if sf.is_none() => stats.ammo.rockets_small += 1,
+                "item_rockets" if sf.is_some() => stats.ammo.rockets_large += 1,
+                "item_cells" if sf.is_none() => stats.ammo.cells_small += 1,
+                "item_cells" if sf.is_some() => stats.ammo.cells_large += 1,
+
+                "item_key1" => stats.keys.silver += 1,
+                "item_key2" => stats.keys.gold += 1,
+
+                "item_artifact_envirosuit" => stats.powerups.biosuit += 1,
+                "item_artifact_super_damage" => stats.powerups.pent += 1,
+                "item_artifact_invulnerability" => stats.powerups.quad += 1,
+                "item_artifact_invisibility" => stats.powerups.ring += 1,
+
+                "trigger_changelevel" => stats.triggers.changelevel += 1,
+                "trigger_secret" => stats.triggers.secret += 1,
+                "trigger_teleport" => stats.triggers.teleport += 1,
+                _ => {}
+            }
+        }
+    }
+
+    info.entity_stats = stats;
+
     Ok(info)
-}
-
-fn _count(entities: &[HashMap<String, String>], classname: &str) -> u32 {
-    entities
-        .iter()
-        .filter(|hmap| hmap.get("classname").is_some_and(|c| c == classname))
-        .count() as u32
-}
-
-fn _count_sf(
-    entities: &[HashMap<String, String>],
-    classname: &str,
-    spawnflag: Option<String>,
-) -> u32 {
-    entities
-        .iter()
-        .filter(|hmap| {
-            hmap.get("classname").is_some_and(|c| c == classname)
-                && hmap.get("spawnflags") == spawnflag.as_ref()
-        })
-        .count() as u32
 }
 
 #[cfg(test)]
@@ -122,10 +96,12 @@ mod tests {
     use anyhow::Result;
     use pretty_assertions::assert_eq;
 
+    use crate::info::{Ammo, Armors, Healthpacks, Powerups, Spawns, Triggers, Weapons};
+
     use super::*;
 
     #[test]
-    fn test_default() -> Result<()> {
+    fn test_get_info() -> Result<()> {
         {
             let info = get_info(&fs::read("tests/files/povdmm4.bsp")?)?;
             let mut expect = Info {
@@ -165,7 +141,7 @@ mod tests {
                         health_large: 3,
                         megahealth: 3,
                     },
-                    func: Func {
+                    triggers: Triggers {
                         changelevel: 1,
                         secret: 0,
                         teleport: 2,
@@ -180,7 +156,6 @@ mod tests {
                         coop: 0,
                         deathmatch: 6,
                         start: 1,
-                        start2: 0,
                     },
                     weapons: Weapons {
                         super_shotgun: 1,
