@@ -76,7 +76,7 @@ pub fn get_info(data: &[u8]) -> Result<BspInfo> {
                 "item_key2" => stats.items.gold_key += 1,
                 "item_flag_team1" => stats.items.red_flag += 1,
                 "item_flag_team2" => stats.items.blue_flag += 1,
-                "item_tfgoal" => stats.items.tfgoal += 1,
+                "item_tfgoal" => stats.items.tf_goal += 1,
 
                 // ammo
                 "item_shells" if sf.is_none() => stats.ammo.shells_small += 1,

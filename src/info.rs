@@ -51,7 +51,7 @@ pub struct Items {
     pub gold_key: u32,
     pub red_flag: u32,
     pub blue_flag: u32,
-    pub tfgoal: u32,
+    pub tf_goal: u32,
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
