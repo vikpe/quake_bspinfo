@@ -16,70 +16,70 @@ pub fn get_info(data: &[u8]) -> Result<Info> {
         size: data.len() as u32,
         entity_stats: EntityStats {
             spawns: Spawns {
-                coop: count_classname(&ents, "info_player_coop"),
-                deathmatch: count_classname(&ents, "info_player_deathmatch"),
-                start: count_classname(&ents, "info_player_start"),
-                start2: count_classname(&ents, "info_player_start2"),
+                coop: _count(&ents, "info_player_coop"),
+                deathmatch: _count(&ents, "info_player_deathmatch"),
+                start: _count(&ents, "info_player_start"),
+                start2: _count(&ents, "info_player_start2"),
             },
             func: Func {
-                changelevel: count_classname(&ents, "trigger_changelevel"),
-                secret: count_classname(&ents, "trigger_secret"),
-                teleport: count_classname(&ents, "trigger_teleport"),
+                changelevel: _count(&ents, "trigger_changelevel"),
+                secret: _count(&ents, "trigger_secret"),
+                teleport: _count(&ents, "trigger_teleport"),
             },
             monsters: Monsters {
-                chton: count_classname(&ents, "monster_boss"),
-                death_knight: count_classname(&ents, "monster_hell_knight"),
-                enforcer: count_classname(&ents, "monster_enforcer"),
-                fiend: count_classname(&ents, "monster_demon1"),
-                grunt: count_classname(&ents, "monster_army"),
-                knight: count_classname(&ents, "monster_demon1"),
-                ogre: count_classname(&ents, "monster_ogre"),
-                rotfish: count_classname(&ents, "monster_dog"),
-                rottweiler: count_classname(&ents, "monster_dog"),
-                scrag: count_classname(&ents, "monster_wizard"),
-                shambler: count_classname(&ents, "monster_shambler"),
-                shub_niggurath: count_classname(&ents, "monster_oldone"),
-                spawn: count_classname(&ents, "monster_tarbaby"),
-                vore: count_classname(&ents, "monster_shalrath"),
-                zombie: count_classname(&ents, "monster_zombie"),
+                chton: _count(&ents, "monster_boss"),
+                death_knight: _count(&ents, "monster_hell_knight"),
+                enforcer: _count(&ents, "monster_enforcer"),
+                fiend: _count(&ents, "monster_demon1"),
+                grunt: _count(&ents, "monster_army"),
+                knight: _count(&ents, "monster_demon1"),
+                ogre: _count(&ents, "monster_ogre"),
+                rotfish: _count(&ents, "monster_dog"),
+                rottweiler: _count(&ents, "monster_dog"),
+                scrag: _count(&ents, "monster_wizard"),
+                shambler: _count(&ents, "monster_shambler"),
+                shub_niggurath: _count(&ents, "monster_oldone"),
+                spawn: _count(&ents, "monster_tarbaby"),
+                vore: _count(&ents, "monster_shalrath"),
+                zombie: _count(&ents, "monster_zombie"),
             },
             armors: Armors {
-                green_armor: count_classname(&ents, "item_armor1"),
-                yellow_armor: count_classname(&ents, "item_armor2"),
-                red_armor: count_classname(&ents, "item_armorInv"),
+                green_armor: _count(&ents, "item_armor1"),
+                yellow_armor: _count(&ents, "item_armor2"),
+                red_armor: _count(&ents, "item_armorInv"),
             },
             weapons: Weapons {
-                super_shotgun: count_classname(&ents, "weapon_supershotgun"),
-                nailgun: count_classname(&ents, "weapon_nailgun"),
-                super_nailgun: count_classname(&ents, "weapon_supernailgun"),
-                grenade_launcher: count_classname(&ents, "weapon_grenadelauncher"),
-                rocket_launcher: count_classname(&ents, "weapon_rocketlauncher"),
-                ligthning_gun: count_classname(&ents, "weapon_lightning"),
+                super_shotgun: _count(&ents, "weapon_supershotgun"),
+                nailgun: _count(&ents, "weapon_nailgun"),
+                super_nailgun: _count(&ents, "weapon_supernailgun"),
+                grenade_launcher: _count(&ents, "weapon_grenadelauncher"),
+                rocket_launcher: _count(&ents, "weapon_rocketlauncher"),
+                ligthning_gun: _count(&ents, "weapon_lightning"),
             },
             healthpacks: Healthpacks {
-                health_small: 0,
-                health_large: 0,
-                megahealth: 0,
+                health_small: _count_sf(&ents, "item_health", None),
+                health_large: _count_sf(&ents, "item_health", Some("1".to_string())),
+                megahealth: _count_sf(&ents, "item_health", Some("2".to_string())),
             },
             ammo: Ammo {
-                shells_small: 0,
-                shells_large: 0,
-                nails_small: 0,
-                nails_large: 0,
-                rockets_small: 0,
-                rockets_large: 0,
-                cells_small: 0,
-                cells_large: 0,
+                shells_small: _count_sf(&ents, "item_shells", None),
+                shells_large: _count_sf(&ents, "item_shells", Some("1".to_string())),
+                nails_small: _count_sf(&ents, "item_spikes", None),
+                nails_large: _count_sf(&ents, "item_spikes", Some("1".to_string())),
+                rockets_small: _count_sf(&ents, "item_rockets", None),
+                rockets_large: _count_sf(&ents, "item_rockets", Some("1".to_string())),
+                cells_small: _count_sf(&ents, "item_cells", None),
+                cells_large: _count_sf(&ents, "item_cells", Some("1".to_string())),
             },
             keys: Keys {
-                silver: count_classname(&ents, "item_key1"),
-                gold: count_classname(&ents, "item_key2"),
+                silver: _count(&ents, "item_key1"),
+                gold: _count(&ents, "item_key2"),
             },
             powerups: Powerups {
-                biosuit: count_classname(&ents, "item_artifact_envirosuit"),
-                pent: count_classname(&ents, "item_artifact_super_damage"),
-                quad: count_classname(&ents, "item_artifact_invulnerability"),
-                ring: count_classname(&ents, "item_artifact_invisibility"),
+                biosuit: _count(&ents, "item_artifact_envirosuit"),
+                pent: _count(&ents, "item_artifact_super_damage"),
+                quad: _count(&ents, "item_artifact_invulnerability"),
+                ring: _count(&ents, "item_artifact_invisibility"),
             },
             runes: Runes {
                 haste: 0,
@@ -94,10 +94,24 @@ pub fn get_info(data: &[u8]) -> Result<Info> {
     Ok(info)
 }
 
-fn count_classname(entities: &[HashMap<String, String>], classname: &str) -> u32 {
+fn _count(entities: &[HashMap<String, String>], classname: &str) -> u32 {
     entities
         .iter()
-        .filter(|hmap| hmap.get("classname").unwrap() == classname)
+        .filter(|hmap| hmap.get("classname").is_some_and(|c| c == classname))
+        .count() as u32
+}
+
+fn _count_sf(
+    entities: &[HashMap<String, String>],
+    classname: &str,
+    spawnflag: Option<String>,
+) -> u32 {
+    entities
+        .iter()
+        .filter(|hmap| {
+            hmap.get("classname").is_some_and(|c| c == classname)
+                && hmap.get("spawnflags") == spawnflag.as_ref()
+        })
         .count() as u32
 }
 
@@ -255,6 +269,21 @@ mod tests {
                         green_armor: 0,
                         yellow_armor: 1,
                         red_armor: 1,
+                    },
+                    ammo: Ammo {
+                        shells_small: 5,
+                        shells_large: 4,
+                        nails_small: 7,
+                        nails_large: 4,
+                        rockets_small: 4,
+                        rockets_large: 3,
+                        cells_small: 2,
+                        cells_large: 1,
+                    },
+                    healthpacks: Healthpacks {
+                        health_small: 4,
+                        health_large: 3,
+                        megahealth: 3,
                     },
                     func: Func {
                         changelevel: 1,
