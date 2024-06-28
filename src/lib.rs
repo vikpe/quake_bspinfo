@@ -69,8 +69,8 @@ impl BspInfo {
 
                     // powerups
                     "item_artifact_envirosuit" => e.powerups.biosuit += 1,
-                    "item_artifact_super_damage" => e.powerups.pent += 1,
-                    "item_artifact_invulnerability" => e.powerups.quad += 1,
+                    "item_artifact_super_damage" => e.powerups.quad += 1,
+                    "item_artifact_invulnerability" => e.powerups.pent += 1,
                     "item_artifact_invisibility" => e.powerups.ring += 1,
 
                     // healthpacks
