@@ -3,13 +3,11 @@ use std::path::Path;
 
 use anyhow::Result;
 use serde::{Deserialize, Serialize};
-use sha256::digest;
 
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct BspInfo {
     pub message: String,
     pub size: u32,
-    pub sha256: String,
     pub entity_count: EntityCount,
     pub intermissions: Vec<Intermission>,
     pub race_routes: Vec<RaceRoute>,
@@ -25,7 +23,6 @@ impl BspInfo {
 
         let mut info = BspInfo {
             size: bytes.len() as u32,
-            sha256: digest(bytes),
             ..Default::default()
         };
         let mut e: EntityCount = Default::default();
@@ -267,7 +264,6 @@ mod tests {
         let mut expect = BspInfo {
             message: "DMM4 Arena\\nBy Povo-Hat (http://povo-hat.besmella-quake.com)\\n".to_string(),
             size: 130920,
-            sha256: "e4894f7d54e6293807c7dca201e2a93477362f6447224ca3baf4b3d26b71d35d".to_string(),
             ..Default::default()
         };
         expect.entity_count.spawns.start = 1;
@@ -284,8 +280,6 @@ mod tests {
             let expect = BspInfo {
                 message: "The Abandoned Base".to_string(),
                 size: 1361880,
-                sha256: "cdad534cfbb7a584eda3a0c982b99174003a873aa5c44e1e7f75051fd48dd757"
-                    .to_string(),
                 entity_count: EntityCount {
                     armors: Armors {
                         green_armor: 0,
@@ -365,8 +359,6 @@ mod tests {
             let mut expect = BspInfo {
                 message: "anubis in hurry by anni (Apr 2021)".to_string(),
                 size: 1846812,
-                sha256: "5db3a0590f17b114ae6507b6e6b99437ad693ca4bc6547c8960eec6fb10dc94c"
-                    .to_string(),
                 ..Default::default()
             };
             expect.entity_count.spawns.start = 1;
