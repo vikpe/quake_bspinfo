@@ -10,6 +10,7 @@ let info: BspInfo = quake_bspinfo::parse(&data)?;
 struct BspInfo {
     message: String,
     size: u32,
+    sha256: String,
     entity_count: EntityCount,
     intermissions: Vec<Intermission>,
     race_routes: Vec<RaceRoute>,
