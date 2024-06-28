@@ -1,3 +1,4 @@
+use std::collections::HashMap;
 use std::path::Path;
 
 use anyhow::Result;
@@ -7,6 +8,7 @@ pub struct BspInfo {
     pub message: String,
     pub size: u32,
     pub entity_count: EntityCount,
+    pub intermissions: Vec<Intermission>,
     pub race_routes: Vec<RaceRoute>,
 }
 
@@ -30,11 +32,7 @@ impl BspInfo {
 
                 match classname.as_str() {
                     // misc
-                    "worldspawn" => {
-                        info.message = entity
-                            .get("message")
-                            .map_or("".to_string(), |m| m.to_string());
-                    }
+                    "worldspawn" => info.message = get_string_value(entity, "message"),
 
                     // spawns
                     "info_player_coop" => e.spawns.coop += 1,
@@ -112,17 +110,14 @@ impl BspInfo {
                     "trigger_teleport" => e.triggers.teleport += 1,
 
                     // race routes
-                    "race_route_start" => {
-                        let name = entity
-                            .get("race_route_name")
-                            .map(|v| v.to_string())
-                            .unwrap_or_default();
-                        let description = entity
-                            .get("race_route_description")
-                            .map(|v| v.to_string())
-                            .unwrap_or_default();
-                        info.race_routes.push(RaceRoute { name, description })
-                    }
+                    "race_route_start" => info.race_routes.push(RaceRoute {
+                        name: get_string_value(entity, "race_route_name"),
+                        description: get_string_value(entity, "race_route_description"),
+                    }),
+                    "info_intermission" => info.intermissions.push(Intermission {
+                        origin: get_string_value(entity, "origin"),
+                        mangle: get_string_value(entity, "mangle"),
+                    }),
                     _ => {}
                 }
             }
@@ -132,6 +127,10 @@ impl BspInfo {
 
         Ok(info)
     }
+}
+
+fn get_string_value(ent: &HashMap<String, String>, key: &str) -> String {
+    ent.get(key).map_or("".to_string(), |v| v.to_string())
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
@@ -239,6 +238,12 @@ pub struct Weapons {
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq)]
+pub struct Intermission {
+    pub origin: String,
+    pub mangle: String,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq)]
 pub struct RaceRoute {
     pub name: String,
     pub description: String,
@@ -326,7 +331,25 @@ mod tests {
                     },
                     ..Default::default()
                 },
-                ..Default::default()
+                race_routes: vec![],
+                intermissions: vec![
+                    Intermission {
+                        origin: "-272 -800 336".to_string(),
+                        mangle: "20 45 0".to_string(),
+                    },
+                    Intermission {
+                        origin: "352 -296 -192".to_string(),
+                        mangle: "-20 45 0".to_string(),
+                    },
+                    Intermission {
+                        origin: "-736 376 240".to_string(),
+                        mangle: "20 30 0".to_string(),
+                    },
+                    Intermission {
+                        origin: "1840 256 64".to_string(),
+                        mangle: "20 240 0".to_string(),
+                    },
+                ],
             };
             assert_eq!(info, expect);
         }

@@ -7,10 +7,11 @@ let data = fs::read("dm3.mvd")?;
 let info: BspInfo = quake_bspinfo::parse(&data)?;
 
 // result
-struct Info {
+struct BspInfo {
     message: String,
     size: u32,
     entity_count: EntityCount,
+    intermissions: Vec<Intermission>,
     race_routes: Vec<RaceRoute>,
 }
 
@@ -106,6 +107,11 @@ struct Weapons {
     grenade_launcher: u32,
     rocket_launcher: u32,
     ligthning_gun: u32,
+}
+
+struct Intermission {
+    origin: String,
+    mangle: String,
 }
 
 struct RaceRoute {
