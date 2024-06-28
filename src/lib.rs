@@ -2,8 +2,9 @@ use std::collections::HashMap;
 use std::path::Path;
 
 use anyhow::Result;
+use serde::{Deserialize, Serialize};
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct BspInfo {
     pub message: String,
     pub size: u32,
@@ -133,7 +134,7 @@ fn get_string_value(ent: &HashMap<String, String>, key: &str) -> String {
     ent.get(key).map_or("".to_string(), |v| v.to_string())
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct EntityCount {
     pub ammo: Ammo,
     pub armors: Armors,
@@ -146,7 +147,7 @@ pub struct EntityCount {
     pub weapons: Weapons,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Ammo {
     pub shells_small: u32,
     pub shells_large: u32,
@@ -158,21 +159,21 @@ pub struct Ammo {
     pub cells_large: u32,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Armors {
     pub green_armor: u32,
     pub yellow_armor: u32,
     pub red_armor: u32,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Healthpacks {
     pub health_small: u32,
     pub health_large: u32,
     pub megahealth: u32,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Items {
     pub silver_key: u32,
     pub gold_key: u32,
@@ -181,7 +182,7 @@ pub struct Items {
     pub tf_goal: u32,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Monsters {
     pub chton: u32,
     pub death_knight: u32,
@@ -200,7 +201,7 @@ pub struct Monsters {
     pub zombie: u32,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Powerups {
     pub biosuit: u32,
     pub quad: u32,
@@ -208,7 +209,7 @@ pub struct Powerups {
     pub ring: u32,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Spawns {
     pub coop: u32,
     pub deathmatch: u32,
@@ -220,14 +221,14 @@ pub struct Spawns {
     pub teamspawn: u32,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Triggers {
     pub changelevel: u32,
     pub secret: u32,
     pub teleport: u32,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Weapons {
     pub super_shotgun: u32,
     pub nailgun: u32,
@@ -237,13 +238,13 @@ pub struct Weapons {
     pub ligthning_gun: u32,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Intermission {
     pub origin: String,
     pub mangle: String,
 }
 
-#[derive(Clone, Debug, Default, Eq, PartialEq)]
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct RaceRoute {
     pub name: String,
     pub description: String,

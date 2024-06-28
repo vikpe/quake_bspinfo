@@ -5,7 +5,7 @@ categories = ["parsing"]
 keywords = ["bsp", "parser", "quake", "quakeworld"]
 repository = "https://github.com/vikpe/bspparser"
 authors = ["Viktor Persson"]
-version = "0.1.0"
+version = "0.2.0"
 edition = "2021"
 license = "MIT"
 include = [
@@ -17,6 +17,8 @@ include = [
 [dependencies]
 anyhow = "1.0.86"
 bspparser = "0.2.0"
+serde = { version = "1.0.203", features = ["derive"] }
+serde_json = "1.0.118"
 
 [dev-dependencies]
 pretty_assertions = "1.4.0"
