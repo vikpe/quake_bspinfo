@@ -8,6 +8,7 @@ use serde::{Deserialize, Serialize};
 pub struct BspInfo {
     pub message: String,
     pub size: u32,
+    pub category: String,
     pub entity_count: EntityCount,
     pub intermissions: Vec<Intermission>,
     pub race_routes: Vec<RaceRoute>,
@@ -125,6 +126,7 @@ impl BspInfo {
         }
 
         info.entity_count = e;
+        info.category = get_category(&info);
 
         Ok(info)
     }
@@ -132,6 +134,32 @@ impl BspInfo {
 
 fn get_string_value(ent: &HashMap<String, String>, key: &str) -> String {
     ent.get(key).map_or("".to_string(), |v| v.to_string())
+}
+
+fn get_category(info: &BspInfo) -> String {
+    let e = info.entity_count.clone();
+    let has_dm_items = !e.ammo.is_empty() || !e.armors.is_empty() || !e.weapons.is_empty();
+
+    if !e.monsters.is_empty() && e.triggers.changelevel > 0 {
+        "Single Player".to_string()
+    } else if (e.spawns.team1 + e.spawns.team2 + e.items.red_flag + e.items.blue_flag) > 0 {
+        "Capture the Flag".to_string()
+    } else if e.items.tf_goal > 0 {
+        "Team Fortress".to_string()
+    } else if info.message.to_lowercase().contains(" trick ")
+        || !has_dm_items && e.triggers.teleport >= e.spawns.deathmatch
+    {
+        "Trick".to_string()
+    } else if e.spawns.deathmatch > 0 && e.weapons.is_empty() {
+        match info.race_routes.is_empty() {
+            true => "Arena".to_string(),
+            false => "Race".to_string(),
+        }
+    } else if e.spawns.deathmatch > 1 {
+        "Deathmatch".to_string()
+    } else {
+        "Other".to_string()
+    }
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
@@ -159,6 +187,23 @@ pub struct Ammo {
     pub cells_large: u32,
 }
 
+impl Ammo {
+    pub fn count(&self) -> u32 {
+        self.shells_small
+            + self.shells_large
+            + self.nails_small
+            + self.nails_large
+            + self.rockets_small
+            + self.rockets_large
+            + self.cells_small
+            + self.cells_large
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.count() == 0
+    }
+}
+
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Armors {
     pub green_armor: u32,
@@ -166,11 +211,31 @@ pub struct Armors {
     pub red_armor: u32,
 }
 
+impl Armors {
+    pub fn count(&self) -> u32 {
+        self.green_armor + self.yellow_armor + self.red_armor
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.count() == 0
+    }
+}
+
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Healthpacks {
     pub health_small: u32,
     pub health_large: u32,
     pub megahealth: u32,
+}
+
+impl Healthpacks {
+    pub fn count(&self) -> u32 {
+        self.health_small + self.health_large + self.megahealth
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.count() == 0
+    }
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
@@ -200,6 +265,29 @@ pub struct Monsters {
     pub vore: u32,
     pub zombie: u32,
 }
+impl Monsters {
+    pub fn count(&self) -> u32 {
+        self.chton
+            + self.death_knight
+            + self.enforcer
+            + self.fiend
+            + self.grunt
+            + self.knight
+            + self.ogre
+            + self.rotfish
+            + self.rottweiler
+            + self.scrag
+            + self.shambler
+            + self.shub_niggurath
+            + self.spawn
+            + self.vore
+            + self.zombie
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.count() == 0
+    }
+}
 
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Powerups {
@@ -207,6 +295,16 @@ pub struct Powerups {
     pub quad: u32,
     pub pent: u32,
     pub ring: u32,
+}
+
+impl Powerups {
+    pub fn count(&self) -> u32 {
+        self.biosuit + self.quad + self.pent + self.ring
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.count() == 0
+    }
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
@@ -238,6 +336,21 @@ pub struct Weapons {
     pub ligthning_gun: u32,
 }
 
+impl Weapons {
+    pub fn count(&self) -> u32 {
+        self.super_shotgun
+            + self.nailgun
+            + self.super_nailgun
+            + self.grenade_launcher
+            + self.rocket_launcher
+            + self.ligthning_gun
+    }
+
+    pub fn is_empty(&self) -> bool {
+        self.count() == 0
+    }
+}
+
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
 pub struct Intermission {
     pub origin: String,
@@ -264,6 +377,7 @@ mod tests {
         let mut expect = BspInfo {
             message: "DMM4 Arena\\nBy Povo-Hat (http://povo-hat.besmella-quake.com)\\n".to_string(),
             size: 130920,
+            category: "Arena".to_string(),
             ..Default::default()
         };
         expect.entity_count.spawns.start = 1;
@@ -280,6 +394,7 @@ mod tests {
             let expect = BspInfo {
                 message: "The Abandoned Base".to_string(),
                 size: 1361880,
+                category: "Deathmatch".to_string(),
                 entity_count: EntityCount {
                     armors: Armors {
                         green_armor: 0,
@@ -359,6 +474,7 @@ mod tests {
             let mut expect = BspInfo {
                 message: "anubis in hurry by anni (Apr 2021)".to_string(),
                 size: 1846812,
+                category: "Race".to_string(),
                 ..Default::default()
             };
             expect.entity_count.spawns.start = 1;
