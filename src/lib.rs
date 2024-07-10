@@ -89,8 +89,8 @@ impl BspInfo {
                     "item_tfgoal" => e.items.tf_goal += 1,
 
                     // points
-                    "info_zip" => e.points.zip += 1,
-                    "info_start" => e.points.start += 1,
+                    "point_start" => e.points.start += 1,
+                    "point_zip" => e.points.zip += 1,
 
                     // ammo
                     "item_shells" if sf.is_none() => e.ammo.shells_small += 1,
