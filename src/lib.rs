@@ -150,12 +150,12 @@ fn get_category(info: &BspInfo) -> String {
         "Capture the Flag".to_string()
     } else if e.items.tf_goal > 0 {
         "Team Fortress".to_string()
+    } else if !e.points.is_empty() || !info.race_routes.is_empty() {
+        "Race".to_string()
     } else if info.message.to_lowercase().contains(" trick ")
         || !has_dm_items && e.triggers.teleport >= e.spawns.deathmatch
     {
         "Trick".to_string()
-    } else if !e.points.is_empty() || !info.race_routes.is_empty() {
-        "Race".to_string()
     } else if e.spawns.deathmatch > 0 && e.weapons.is_empty() {
         "Arena".to_string()
     } else if e.spawns.deathmatch > 1 {
