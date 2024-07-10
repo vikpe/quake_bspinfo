@@ -154,11 +154,10 @@ fn get_category(info: &BspInfo) -> String {
         || !has_dm_items && e.triggers.teleport >= e.spawns.deathmatch
     {
         "Trick".to_string()
+    } else if !e.points.is_empty() || !info.race_routes.is_empty() {
+        "Race".to_string()
     } else if e.spawns.deathmatch > 0 && e.weapons.is_empty() {
-        match info.race_routes.is_empty() && e.points.is_empty() {
-            true => "Arena".to_string(),
-            false => "Race".to_string(),
-        }
+        "Arena".to_string()
     } else if e.spawns.deathmatch > 1 {
         "Deathmatch".to_string()
     } else {
