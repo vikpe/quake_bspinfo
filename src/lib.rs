@@ -88,6 +88,10 @@ impl BspInfo {
                     "item_flag_team2" => e.items.blue_flag += 1,
                     "item_tfgoal" => e.items.tf_goal += 1,
 
+                    // points
+                    "info_zip" => e.points.zip += 1,
+                    "info_start" => e.points.start += 1,
+
                     // ammo
                     "item_shells" if sf.is_none() => e.ammo.shells_small += 1,
                     "item_shells" if sf.is_some() => e.ammo.shells_large += 1,
@@ -151,7 +155,7 @@ fn get_category(info: &BspInfo) -> String {
     {
         "Trick".to_string()
     } else if e.spawns.deathmatch > 0 && e.weapons.is_empty() {
-        match info.race_routes.is_empty() {
+        match info.race_routes.is_empty() && e.points.is_empty() {
             true => "Arena".to_string(),
             false => "Race".to_string(),
         }
@@ -169,6 +173,7 @@ pub struct EntityCount {
     pub healthpacks: Healthpacks,
     pub items: Items,
     pub monsters: Monsters,
+    pub points: Points,
     pub powerups: Powerups,
     pub spawns: Spawns,
     pub triggers: Triggers,
@@ -324,6 +329,21 @@ pub struct Triggers {
     pub changelevel: u32,
     pub secret: u32,
     pub teleport: u32,
+}
+
+#[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
+pub struct Points {
+    pub zip: u32,
+    pub start: u32,
+}
+
+impl Points {
+    pub fn count(&self) -> u32 {
+        self.zip + self.start
+    }
+    pub fn is_empty(&self) -> bool {
+        self.count() == 0
+    }
 }
 
 #[derive(Clone, Debug, Default, Eq, PartialEq, Serialize, Deserialize)]
